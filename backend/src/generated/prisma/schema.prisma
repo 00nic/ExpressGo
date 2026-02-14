@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+}
+
+model Repartidor {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  nombre   String
+  telefono String?
+  paquetes Paquete[] // Relación 1:N (Un repartidor tiene muchos paquetes)
+}
+
+model Paquete {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  codigoEnvio  String @unique
+  direccion    String
+  destinatario String
+  tamano       Tamano // chico, mediano, grande [cite: 34]
+  estado       Estado @default(PENDIENTE) // pendiente, en camino, entregado [cite: 35]
+  latitud      Float
+  longitud     Float
+  ordenEntrega Int // Para la lista ordenada [cite: 42]
+
+  // Relación con Repartidor
+  repartidor   Repartidor @relation(fields: [repartidorId], references: [id])
+  repartidorId String     @db.ObjectId
+}
+
+enum Tamano {
+  CHICO
+  MEDIANO
+  GRANDE
+}
+
+enum Estado {
+  PENDIENTE
+  EN_CAMINO
+  ENTREGADO
+}
