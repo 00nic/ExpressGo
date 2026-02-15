@@ -6,11 +6,11 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model Repartidor {
@@ -32,8 +32,8 @@ model Paquete {
   ordenEntrega    Int        // Para la lista ordenada [cite: 42]
   
   // Relación con Repartidor
-  repartidor      Repartidor @relation(fields: [repartidorId], references: [id])
-  repartidorId    String     @db.ObjectId
+  repartidor      Repartidor? @relation(fields: [repartidorId], references: [id])
+  repartidorId    String?     @db.ObjectId
 }
 
 enum Tamano {

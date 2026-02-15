@@ -32,6 +32,7 @@ export class RepartidoresController {
   @Patch(':id') // Editar repartidor [cite: 26]
   update(@Param('id') id: string, @Body() updateData: any) {
     // Nota: Aquí podrías crear un UpdateRepartidorDto más adelante
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return this.repartidoresService.update(id, updateData);
   }
 
