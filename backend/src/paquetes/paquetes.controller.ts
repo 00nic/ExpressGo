@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PaquetesService } from './paquetes.service';
 import { CreatePaqueteDto } from './dto/create-paquete.dto';
 import { UpdatePaqueteDto } from './dto/update-paquete.dto';
@@ -19,16 +27,16 @@ export class PaquetesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.paquetesService.findOne(+id);
+    return this.paquetesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePaqueteDto: UpdatePaqueteDto) {
-    return this.paquetesService.update(+id, updatePaqueteDto);
+    return this.paquetesService.update(id, updatePaqueteDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.paquetesService.remove(+id);
+    return this.paquetesService.remove(id);
   }
 }
