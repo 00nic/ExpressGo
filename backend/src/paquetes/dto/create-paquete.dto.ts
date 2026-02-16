@@ -6,7 +6,7 @@ import {
   IsOptional,
   Min,
 } from 'class-validator';
-//import { Tamano } from '@prisma/client'; // Importamos el Enum de Prisma
+import { Tamano, Estado } from '@prisma/client'; // Importamos el Enum de Prisma
 export class CreatePaqueteDto {
   @IsString()
   @IsNotEmpty()
@@ -21,8 +21,14 @@ export class CreatePaqueteDto {
   destinatario: string;
 
   @IsNotEmpty()
-  @IsEnum(['CHICO', 'MEDIANO', 'GRANDE'])
-  tamano: 'CHICO' | 'MEDIANO' | 'GRANDE';
+  @IsEnum(Tamano)
+  tamano: Tamano;
+
+  @IsEnum(Estado, {
+    message: 'El estado debe ser: PENDIENTE, EN_CAMINO o ENTREGADO',
+  })
+  @IsOptional() // Opcional porque en el schema ya tiene un default(PENDIENTE)
+  estado?: Estado;
 
   @IsNotEmpty()
   @IsNumber()
