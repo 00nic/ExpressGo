@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CreatePaqueteDto } from './dto/create-paquete.dto';
 import { UpdatePaqueteDto } from './dto/update-paquete.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -10,16 +15,36 @@ export class PaquetesService {
   async create(createPaqueteDto: CreatePaqueteDto) {
     const { repartidorId, ...rest } = createPaqueteDto;
 
-    return this.prisma.paquete.create({
-      data: {
-        ...rest,
-        // Si viene repartidorId, lo conectamos automáticamente
-        ...(repartidorId && {
-          repartidor: { connect: { id: repartidorId } },
-        }),
-      },
-    });
+    if (repartidorId) {
+      const repartidor = await this.prisma.repartidor.findUnique({
+        where: { id: repartidorId },
+      });
+      if (!repartidor) {
+        throw new NotFoundException(
+          `El repartidor con ID ${repartidorId} no existe.`,
+        );
+      }
+    }
+    try {
+      return this.prisma.paquete.create({
+        data: {
+          ...rest,
+          // Si viene repartidorId, lo conectamos automáticamente
+          ...(repartidorId && {
+            repartidor: { connect: { id: repartidorId } },
+          }),
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new BadRequestException('El código de envío ya está en uso.');
+        }
+      }
+      throw error;
+    }
   }
+
   async findAll() {
     return this.prisma.paquete.findMany({
       include: { repartidor: true }, // Traemos info del repartidor asignado
@@ -38,6 +63,7 @@ export class PaquetesService {
   }
 
   async update(id: string, updatePaqueteDto: UpdatePaqueteDto) {
+    await this.findOne(id); // Verificamos si existe antes de actualizar
     const { repartidorId, ...rest } = updatePaqueteDto;
 
     return this.prisma.paquete.update({
