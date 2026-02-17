@@ -53,9 +53,9 @@ const RepartidoresPage = () => {
         </Button>
       </Box>
 
-      <TableContainer component={Paper} elevation={3}>
+      <TableContainer component={Paper} elevation={4} sx={{ borderRadius: 3, overflow: 'hidden' }}>
         <Table>
-          <TableHead sx={{ backgroundColor: '#1976d2' }}>
+          <TableHead sx={{ backgroundColor: '#2c3e50' }}>
             <TableRow>
               <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Nombre</TableCell>
               <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Teléfono</TableCell>
