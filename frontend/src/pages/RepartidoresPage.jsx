@@ -66,11 +66,12 @@ const RepartidoresPage = () => {
         setFormOpen(true);
     };
 
-    const repartidoresFiltrados = repartidores.filter((r) => 
-        r.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-        r.vehiculo.toLowerCase().includes(terminoBusqueda.toLowerCase())
-    );
-
+    const repartidoresFiltrados = repartidores.filter((r) => {
+      const termino = terminoBusqueda.toLowerCase();
+      const nombre = (r.nombre || "").toLowerCase();
+      return nombre.includes(termino);
+    })
+    
   // 2. Función para eliminar
     const handleDelete = async (id) => {
         if (window.confirm("¿Estás seguro de eliminar este repartidor?")) {

@@ -83,7 +83,7 @@ const PaqueteForm = ({ open, onClose, onSave, paqueteInicial }) => {
           </Grid>
           <Grid size={{ xs: 6 }}>
             <TextField id="tamano" select label="Tamaño" name="tamano" fullWidth value={formData.tamano} onChange={handleChange}>
-              <MenuItem value="PEQUEÑO">Pequeño</MenuItem>
+              <MenuItem value="CHICO">Pequeño</MenuItem>
               <MenuItem value="MEDIANO">Mediano</MenuItem>
               <MenuItem value="GRANDE">Grande</MenuItem>
             </TextField>
