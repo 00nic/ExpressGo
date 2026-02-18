@@ -27,30 +27,29 @@ EXPRESSGO es una solución integral para la gestión de envíos, repartidores y 
     cd expressgo
     
 ### 2. Backend
-
-# Entrar a la carpeta del servidor
+Entrar a la carpeta del servidor
     cd backend
 
-# Instalar dependencias
+Instalar dependencias
     npm install
 
-# Configurar variables de entorno
+Configurar variables de entorno
     Crea un archivo .env y agrega tu cadena de conexión
     DATABASE_URL="mongodb+srv://USUARIO:PASSWORD@cluster.mongodb.net/expressgo?retryWrites=true&w=majority"
 
-# Generar el cliente de Prisma
+Generar el cliente de Prisma
     npx prisma generate
 
-# Iniciar el servidor en modo desarrollo
+Iniciar el servidor en modo desarrollo
     npm run start:dev
 
 ### 3. Frontend
 
-# Desde la raíz del proyecto, entrar a la carpeta del cliente
+Desde la raíz del proyecto, entrar a la carpeta del cliente
     cd frontend
 
-# Instalar dependencias
+Instalar dependencias
     npm install
 
-# Iniciar la aplicación
+Iniciar la aplicación
     npm run dev

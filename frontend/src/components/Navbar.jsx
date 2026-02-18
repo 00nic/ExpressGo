@@ -1,6 +1,5 @@
 import { AppBar, Toolbar, Button, Typography, Box } from '@mui/material';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-
 import { Link } from 'react-router-dom';
 
 const Navbar = () => (
