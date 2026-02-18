@@ -7,13 +7,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import api from '../api/api';
+import PaqueteForm from '../components/PaqueteForm';
 
 const PaquetesPage = () => {
   const [paquetes, setPaquetes] = useState([]);
+  const [formOpen, setFormOpen] = useState(false);
+  const [paqueteAEditar, setPaqueteAEditar] = useState(null);
 
   // Carga todos los paquetes de la DB
 
-  useEffect(() => {
+    useEffect(() => {
         const fetchPaquetes = async () => {
             try {
             const response = await api.get('/paquetes');
@@ -23,7 +26,46 @@ const PaquetesPage = () => {
             }
         };
         fetchPaquetes();
-  }, []);
+    }, []);
+
+    const handleOpenCrear = () => {
+        setPaqueteAEditar(null); // Importante: null indica "Modo Creación"
+        setFormOpen(true);
+    };
+
+    const handleOpenEditar = (paquete) => {
+        setPaqueteAEditar(paquete); // Pasamos los datos del paquete para "Modo Edición"
+        setFormOpen(true);
+    };
+
+    const handleSavePaquete = async (data) => {
+        try {
+            const payload = {
+                codigoEnvio: data.codigoEnvio,
+                direccion: data.direccion,
+                destinatario: data.destinatario,
+                tamano: data.tamano,
+                estado: data.estado,
+                latitud: data.latitud,
+                longitud: data.longitud,
+                ordenEntrega: data.ordenEntrega,
+                repartidorId: data.repartidorId || null
+            };
+            if (paqueteAEditar) {
+                // Si estamos editando
+                await api.patch(`/paquetes/${paqueteAEditar.id}`, payload);
+            } else {
+                // Si es nuevo
+                await api.post('/paquetes', payload);
+            }
+            const response = await api.get('/paquetes');
+            setPaquetes(response.data);
+            setFormOpen(false);
+        } catch (error) {
+            console.error("Error al guardar:", error);
+            alert("Hubo un error al procesar el paquete. Revisa los datos.");
+        }
+    };
 
   const handleEliminar = async (id) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar este paquete? Esta acción no se puede deshacer.")) {
@@ -51,14 +93,9 @@ const PaquetesPage = () => {
         <Typography variant="h4" component="h1" gutterBottom>
           Gestión de Paquetes
         </Typography>
-        <Box>
-          {/*<IconButton onClick={fetchPaquetes} sx={{ mr: 2 }}>
-            <RefreshIcon />
-          </IconButton>*/}
-          <Button variant="contained" color="primary" size="large">
+        <Button variant="contained" color="primary" size="large" onClick={handleOpenCrear}>
             Nuevo Paquete
-          </Button>
-        </Box>
+        </Button>
       </Box>
 
       <TableContainer component={Paper} elevation={4} sx={{ borderRadius: 3, overflow: 'hidden' }}>
@@ -104,7 +141,7 @@ const PaquetesPage = () => {
                   </TableCell>
                   <TableCell align="center">
                     <Tooltip title="Editar">
-                      <IconButton color="primary"><EditIcon /></IconButton>
+                      <IconButton color="primary" onClick={() => handleOpenEditar(p)}><EditIcon /></IconButton>
                     </Tooltip>
                     <Tooltip title="Eliminar">
                       <IconButton color="error" onClick={() => handleEliminar(p.id)}><DeleteIcon /></IconButton>
@@ -121,6 +158,12 @@ const PaquetesPage = () => {
           </Box>
         )}
       </TableContainer>
+      <PaqueteForm 
+        open={formOpen} 
+        onClose={() => setFormOpen(false)} 
+        onSave={handleSavePaquete}
+        paqueteInicial={paqueteAEditar}
+      />
     </Container>
   );
 };
