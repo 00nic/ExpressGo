@@ -9,12 +9,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import MapIcon from '@mui/icons-material/Map';
 import api from '../api/api';
 import RepartidorForm from '../components/RepartidorForm';
+import Buscador from '../components/Buscador';
 
 const RepartidoresPage = () => {
     const [repartidores, setRepartidores] = useState([]);
     const navigate = useNavigate();
     const [formOpen, setFormOpen] = useState(false);
     const [repartidorAEditar, setRepartidorAEditar] = useState(null);
+    const [terminoBusqueda, setTerminoBusqueda] = useState('');
 
   // 1. Cargar repartidores
 
@@ -64,6 +66,11 @@ const RepartidoresPage = () => {
         setFormOpen(true);
     };
 
+    const repartidoresFiltrados = repartidores.filter((r) => 
+        r.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
+        r.vehiculo.toLowerCase().includes(terminoBusqueda.toLowerCase())
+    );
+
   // 2. Función para eliminar
     const handleDelete = async (id) => {
         if (window.confirm("¿Estás seguro de eliminar este repartidor?")) {
@@ -80,6 +87,10 @@ const RepartidoresPage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 6 }}>
+        <Buscador 
+            placeholder="Buscar por nombre..." 
+            onBusqueda={setTerminoBusqueda} 
+        />
       <Box display="flex" justifyContent="space-between" alignItems="center" my={4}>
         <Typography variant="h4" component="h1" gutterBottom>
           Gestión de Repartidores
@@ -99,7 +110,7 @@ const RepartidoresPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {repartidores.map((rep) => (
+            {repartidoresFiltrados.map((rep) => (
               <TableRow key={rep.id} hover>
                 <TableCell>{rep.nombre}</TableCell>
                 <TableCell>{rep.telefono || 'Sin teléfono'}</TableCell>

@@ -7,12 +7,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import api from '../api/api';
+import Buscador from '../components/Buscador.jsx';
 import PaqueteForm from '../components/PaqueteForm';
 
 const PaquetesPage = () => {
   const [paquetes, setPaquetes] = useState([]);
   const [formOpen, setFormOpen] = useState(false);
   const [paqueteAEditar, setPaqueteAEditar] = useState(null);
+  const [terminoBusqueda, setTerminoBusqueda] = useState('');
 
   // Carga todos los paquetes de la DB
 
@@ -67,6 +69,15 @@ const PaquetesPage = () => {
         }
     };
 
+    const paquetesFiltrados = paquetes.filter((p) => {
+        const termino = terminoBusqueda.toLowerCase();
+        return (
+            p.destinatario.toLowerCase().includes(termino) ||
+            p.codigoEnvio.toLowerCase().includes(termino) ||
+            p.direccion.toLowerCase().includes(termino)
+        );
+    });
+
   const handleEliminar = async (id) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar este paquete? Esta acción no se puede deshacer.")) {
       try {
@@ -89,6 +100,10 @@ const PaquetesPage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 6 }}>
+        <Buscador 
+            placeholder="Buscar por destinatario, código o dirección..." 
+            onBusqueda={(val) => setTerminoBusqueda(val)} 
+        />
       <Box display="flex" justifyContent="space-between" alignItems="center" my={4}>
         <Typography variant="h4" component="h1" gutterBottom>
           Gestión de Paquetes
@@ -113,7 +128,7 @@ const PaquetesPage = () => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {paquetes.map((p) => {
+                {paquetesFiltrados.map((p) => {
                 const style = getEstadoStyle(p.estado);
                 return (
                     <TableRow key={p.id} hover>

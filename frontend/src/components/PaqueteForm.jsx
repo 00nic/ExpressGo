@@ -95,7 +95,7 @@ const PaqueteForm = ({ open, onClose, onSave, paqueteInicial }) => {
           </Grid>
           <Grid size={{ xs: 4 }}><TextField id="latitud" label="Lat" name="latitud" type="number" fullWidth value={formData.latitud} onChange={handleChange} /></Grid>
           <Grid size={{ xs: 4 }}><TextField id="longitud" label="Long" name="longitud" type="number" fullWidth value={formData.longitud} onChange={handleChange} /></Grid>
-          <Grid size={{ xs: 4 }}><TextField id="ordenEntrega" label="Orden" name="ordenEntrega" type="number" fullWidth value={formData.ordenEntrega} onChange={handleChange} /></Grid>
+          <Grid size={{ xs: 4 }}><TextField id="ordenEntrega" label="Orden" name="ordenEntrega" type="number" fullWidth value={formData.ordenEntrega} onChange={handleChange} inputProps={{ min: 1 }}/></Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
