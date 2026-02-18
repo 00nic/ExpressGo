@@ -8,52 +8,88 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import MapIcon from '@mui/icons-material/Map';
 import api from '../api/api';
+import RepartidorForm from '../components/RepartidorForm';
 
 const RepartidoresPage = () => {
-  const [repartidores, setRepartidores] = useState([]);
-  const navigate = useNavigate();
+    const [repartidores, setRepartidores] = useState([]);
+    const navigate = useNavigate();
+    const [formOpen, setFormOpen] = useState(false);
+    const [repartidorAEditar, setRepartidorAEditar] = useState(null);
 
   // 1. Cargar repartidores
 
-  useEffect(() => {
+    useEffect(() => {
         const fetchRepartidores = async () => {
             try {
-            const response = await api.get('/repartidores');
-            setRepartidores(response.data);
+                const response = await api.get('/repartidores');
+                setRepartidores(response.data);
             } catch (error) {
-            console.error("Error al obtener repartidores:", error);
+                console.error("Error al obtener repartidores:", error);
             }
         };
         fetchRepartidores();
     }, []);
 
+    const handleSaveRepartidor = async (data) => {
+        try {
+            const payload = {
+                nombre: data.nombre,
+                telefono: data.telefono,
+            };
+            if (repartidorAEditar) {
+                await api.patch(`/repartidores/${repartidorAEditar.id}`, payload);
+            } else {
+                await api.post('/repartidores', payload);
+            }
+            const response = await api.get('/repartidores');
+            setRepartidores(response.data);
+            setFormOpen(false);
+        } catch (error) {
+            console.error("Error al guardar repartidor:", error);
+            alert("Error al guardar repartidor");
+        }
+    };
+
+    const handleOpenCrear = () => {
+        setRepartidorAEditar(null);
+        setFormOpen(true);
+    };
+
+    const handleOpenEditar = (rep) => {
+        setRepartidorAEditar({
+            id: rep.id,
+            nombre: rep.nombre ?? '',
+            telefono: rep.telefono ?? '',
+        });
+        setFormOpen(true);
+    };
 
   // 2. Función para eliminar
-  const handleDelete = async (id) => {
-    if (window.confirm("¿Estás seguro de eliminar este repartidor?")) {
-      try {
-        await api.delete(`/repartidores/${id}`);
-        setRepartidores(prev =>
-        prev.filter(repartidor => repartidor.id !== id)
-        ); 
-      } catch (error) {
-        console.error("Error al eliminar:", error);
-      }
-    }
-  };
+    const handleDelete = async (id) => {
+        if (window.confirm("¿Estás seguro de eliminar este repartidor?")) {
+        try {
+            await api.delete(`/repartidores/${id}`);
+            setRepartidores(prev =>
+            prev.filter(repartidor => repartidor.id !== id)
+            ); 
+        } catch (error) {
+            console.error("Error al eliminar:", error);
+        }
+        }
+    };
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 6 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" my={4}>
         <Typography variant="h4" component="h1" gutterBottom>
           Gestión de Repartidores
         </Typography>
-        <Button variant="contained" color="primary">
+        <Button onClick={handleOpenCrear} variant="contained" color="primary">
           Nuevo Repartidor
         </Button>
       </Box>
 
-      <TableContainer component={Paper} elevation={4} sx={{ borderRadius: 3, overflow: 'hidden' }}>
+      <TableContainer component={Paper} elevation={4} sx={{ borderRadius: 3, overflow: 'auto' }}>
         <Table>
           <TableHead sx={{ backgroundColor: '#2c3e50' }}>
             <TableRow>
@@ -79,7 +115,7 @@ const RepartidoresPage = () => {
                     Ver Hoja de Ruta
                   </Button>
                   
-                  <IconButton color="info" size="small">
+                  <IconButton color="info" size="small" onClick={() => handleOpenEditar(rep)}>
                     <EditIcon />
                   </IconButton>
                   
@@ -92,6 +128,13 @@ const RepartidoresPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <RepartidorForm 
+        key={repartidorAEditar?.id || 'nuevo'}
+        open={formOpen} 
+        onClose={() => setFormOpen(false)} 
+        onSave={handleSaveRepartidor}
+        repartidorInicial={repartidorAEditar}
+      />
     </Container>
   );
 };

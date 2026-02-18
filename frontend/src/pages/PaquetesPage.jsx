@@ -88,7 +88,7 @@ const PaquetesPage = () => {
   };
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 6 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" my={4}>
         <Typography variant="h4" component="h1" gutterBottom>
           Gestión de Paquetes
@@ -98,59 +98,59 @@ const PaquetesPage = () => {
         </Button>
       </Box>
 
-      <TableContainer component={Paper} elevation={4} sx={{ borderRadius: 3, overflow: 'hidden' }}>
+      <TableContainer component={Paper} elevation={4} sx={{ borderRadius: 3, overflowX: 'auto',}}>
         <Table>
-          <TableHead sx={{ backgroundColor: '#2c3e50' }}>
-            <TableRow>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Cod. Envío</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Destinatario</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Dirección</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Repartidor</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Prioridad</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Tamaño</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Estado</TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }} align="center">Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paquetes.map((p) => {
-              const style = getEstadoStyle(p.estado);
-              return (
-                <TableRow key={p.id} hover>
-                  <TableCell sx={{ fontWeight: 'medium' }}>{p.codigoEnvio}</TableCell>
-                  <TableCell>{p.destinatario}</TableCell>
-                  <TableCell>{p.direccion}</TableCell>
-                  <TableCell>
-                    {p.repartidor ? (
-                      <Chip label={p.repartidor.nombre} size="small" variant="outlined" />
-                    ) : (
-                      <Typography variant="caption" color="error">No asignado</Typography>
-                    )}
-                  </TableCell>
-                  <TableCell align="center">
-                    <Typography variant="body2">#{p.ordenEntrega}</Typography>
-                  </TableCell>
-                  <TableCell>{p.tamano}</TableCell>
-                  <TableCell>
-                    <Chip 
-                      label={style.label} 
-                      color={style.color} 
-                      size="small" 
-                      sx={{ fontWeight: 'bold' }}
-                    />
-                  </TableCell>
-                  <TableCell align="center">
-                    <Tooltip title="Editar">
-                      <IconButton color="primary" onClick={() => handleOpenEditar(p)}><EditIcon /></IconButton>
-                    </Tooltip>
-                    <Tooltip title="Eliminar">
-                      <IconButton color="error" onClick={() => handleEliminar(p.id)}><DeleteIcon /></IconButton>
-                    </Tooltip>
-                  </TableCell>
+            <TableHead sx={{ backgroundColor: '#2c3e50' }}>
+                <TableRow>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Cod. Envío</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Destinatario</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Dirección</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Repartidor</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Prioridad</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Tamaño</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Estado</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold' }} align="center">Acciones</TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
+            </TableHead>
+            <TableBody>
+                {paquetes.map((p) => {
+                const style = getEstadoStyle(p.estado);
+                return (
+                    <TableRow key={p.id} hover>
+                        <TableCell sx={{ fontWeight: 'medium' }}>{p.codigoEnvio}</TableCell>
+                        <TableCell>{p.destinatario}</TableCell>
+                        <TableCell>{p.direccion}</TableCell>
+                        <TableCell>
+                            {p.repartidor ? (
+                            <Chip label={p.repartidor.nombre} size="small" variant="outlined" />
+                            ) : (
+                            <Typography variant="caption" color="error">No asignado</Typography>
+                            )}
+                        </TableCell>
+                        <TableCell align="center">
+                            <Typography variant="body2">#{p.ordenEntrega}</Typography>
+                        </TableCell>
+                        <TableCell>{p.tamano}</TableCell>
+                        <TableCell>
+                            <Chip 
+                            label={style.label} 
+                            color={style.color} 
+                            size="small" 
+                            sx={{ fontWeight: 'bold' }}
+                            />
+                        </TableCell>
+                        <TableCell align="center">
+                            <Tooltip title="Editar">
+                            <IconButton color="primary" onClick={() => handleOpenEditar(p)}><EditIcon /></IconButton>
+                            </Tooltip>
+                            <Tooltip title="Eliminar">
+                            <IconButton color="error" onClick={() => handleEliminar(p.id)}><DeleteIcon /></IconButton>
+                            </Tooltip>
+                        </TableCell>
+                    </TableRow>
+                );
+                })}
+            </TableBody>
         </Table>
         {paquetes.length === 0 && (
           <Box p={4} textAlign="center">
